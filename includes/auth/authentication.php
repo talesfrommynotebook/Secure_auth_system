@@ -1,13 +1,14 @@
 <?php
 
+        
 
     // register logic
     if (isset($_POST["register_btn"])) {
-        
-        // include 'config/app.php';
-        include("../config/app.php");
+
+    
         // import the RegisterController class
-        include("./controllers/RegisterController.php");
+        include("../../controllers/RegisterController.php");
+        
         
         $fullname = validate_input($db->conn, $_POST["name"]);
         $matric_number = validate_input($db->conn, $_POST["matric_number"]);
@@ -16,7 +17,15 @@
 
         // registration controller logic
         $register = new RegisterController();
-        
+
+        $confirm_if_password_match = $register->confirmPassword($password, $confirm_password);
+        if (!$confirm_if_password_match) {
+            // rederect function exist in controller
+            $register->redirect("password and confirm password do not match", "../../register.php");
+            exit();
+        }
+
+
         echo "<br>";
         echo "Register button clicked. Form data: " . $fullname . ", " . $matric_number;
     }

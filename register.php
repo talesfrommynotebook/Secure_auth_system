@@ -27,6 +27,9 @@
                 <br>
                 <h1>Welcome to <span>Oaustech</span></h1>
 
+                <!-- show message -->
+                <?php include 'includes/components/showMessageAndToast.php'; ?>
+
                 <div class="form-container">
                     <!-- Pass event into the function -->
                     <form class="form" action="includes/auth/authentication.php" method="post">
@@ -65,5 +68,7 @@
 
     <!-- scripts -->
     <script src="./assets/js/authentication.js"></script>
+
+        
 </body>
 </html>
