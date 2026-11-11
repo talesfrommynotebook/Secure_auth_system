@@ -1,8 +1,4 @@
-<?php
 
-    include("./includes/config/app.php");
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">
