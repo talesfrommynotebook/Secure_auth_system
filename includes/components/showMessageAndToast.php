@@ -11,11 +11,12 @@
 
 if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
-    $message_type = "green";
-    isset($_SESSION['message_type']) && $message_type = $_SESSION['message_type'];
+    // default toast color is green if not set
+    $message_display_color = "green";
+    isset($_SESSION['message_display_color']) && $message_display_color = $_SESSION['message_display_color'];
 
 
-    echo "<span class='message' style='color: $message_type;'>$message</span>";
+    echo "<span class='message' style='color: $message_display_color;'>$message</span>";
 
 
     echo "<script>
@@ -25,13 +26,13 @@ if (isset($_SESSION['message'])) {
                 close: true,
                 gravity: 'bottom',
                 position: 'right',
-                backgroundColor: '$message_type',
+                backgroundColor: '$message_display_color',
             }).showToast();
         </script>";
 
 
     unset($_SESSION['message']);
-    unset($_SESSION['message_type']);
+    unset($_SESSION['message_display_color']);
 }
 
 ?>

@@ -39,7 +39,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="matric_number" class="form-label">Matric Number</label>
-                            <input type="text" class="form-control" id="matric_number" name="matric_number" aria-describedby="matricHelp" required>
+                            <input type="text" class="form-control" id="matric_number" name="matric_number" aria-describedby="matricHelp" placeholder="CSC/DE/25/..." required>
                             <div id="matricHelp" class="form-text">We'll never share your matric number with anyone else.</div>
                         </div>
                         <div class="mb-3">

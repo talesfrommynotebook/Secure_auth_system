@@ -21,13 +21,32 @@
         $confirm_if_password_match = $register->confirmPassword($password, $confirm_password);
         if (!$confirm_if_password_match) {
             // rederect function exist in controller
-            $register->redirect("password and confirm password do not match", "../../register.php");
+            $register->redirect("password and confirm password do not match","red", "../../register.php");
             exit();
         }
 
+        // check if user already exists , using function from controller
+        $user_exists = $register->checkUserExists($matric_number);
+        if ($user_exists) {
+            $register->redirect("User with this matric number already exists", "red", "../../register.php");
+            exit();
+        }
 
-        echo "<br>";
-        echo "Register button clicked. Form data: " . $fullname . ", " . $matric_number;
+        // PHP handles the salt automatically for you behind the scenes.
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        
+        
+        // after all validation, 
+        // proceed to register the user
+        $register_query = $register->registration($fullname, $matric_number, $password);
+        if (!$register_query) {
+            $register->redirect("Registration Failed", "red", "../../register.php");
+            exit();
+        }
+
+        // redirect to authenticator page after successful registration
+        $register->redirect("Registration Successful", "green", "../../authenticator_page.php");
+
     }
 
 
