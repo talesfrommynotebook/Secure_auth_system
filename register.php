@@ -1,4 +1,11 @@
 
+<!-- navbar -->
+<?php include 'includes/components/navbar.php'; ?>
+
+<!-- authentication -->
+<?php include 'includes/auth/authentication.php'; ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,13 +19,11 @@
 
 <body>
 
-    <!-- navbar -->
-    <?php include 'includes/components/navbar.php'; ?>
 
     <section class="hero-section">
         <div class="container">
             <div class="hero-container">
-                <a href="index.php"><img src="assets/img/logo.png" alt="Hero Image"></a>
+                <a href="<?= site_url('index.php') ?>"><img src="assets/img/logo.png" alt="Hero Image"></a>
                 <br>
                 <h1>Welcome to <span>Oaustech</span></h1>
 
@@ -42,7 +47,7 @@
                             <label for="confirm_password" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                         </div>
-                        <input type="submit" name="register_btn" class="btn btn-primary" value="Create Account">
+                        <button type="submit" name="register_btn" class="btn btn-primary">Create Account</button>
                     </form>
                 </div>
 

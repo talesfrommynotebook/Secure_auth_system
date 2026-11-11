@@ -1,3 +1,9 @@
+<?php
+
+    include("./includes/config/app.php");
+
+?>
+
 
 <link rel="stylesheet" href="assets/css/styles.css">
 <!-- bootstrap -->
@@ -14,13 +20,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link" href="<?= site_url('index.php') ?>">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login.php">Login</a>
+                    <a class="nav-link" href="<?= site_url('login.php') ?>">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="register.php">Register</a>
+                    <a class="nav-link" href="<?= site_url('register.php') ?>">Register</a>
                 </li>
             </ul>
         </div>
