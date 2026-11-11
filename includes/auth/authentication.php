@@ -32,7 +32,7 @@
             exit();
         }
 
-        // PHP handles the salt automatically for you behind the scenes.
+        // PHP handles the salt automatically behind the scenes.
         $password = password_hash($password, PASSWORD_DEFAULT);
         
         
@@ -56,8 +56,18 @@
 
     // login logic
     if (isset($_POST["login_btn"])) {
-        $formData = $_POST["login_btn"];
+        
+        // import the LoginController class
+        include("../../controllers/LoginController.php");
 
-        echo "Login button clicked. Form data: " . $formData;
+        $matric_number = validate_input($db->conn, $_POST["matric_number"]);
+        $password = validate_input($db->conn, $_POST["password"]);
+
+        // login controller logic
+        $login = new LoginController();
+
+        // check if user exists and password is correct
+
+        echo "Login button clicked. Form data: " . $matric_number . ", " . $password;
     }
 ?>

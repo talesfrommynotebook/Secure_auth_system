@@ -20,16 +20,20 @@
                 <br>
                 <h1>Login to <span>Account</span></h1>
 
+                <br>
+                <!-- toast -->
+                <?=  include 'includes/components/toast.php' ?>
+                
                 <div class="form-container">
                     <form action="includes/auth/authentication.php" method="post" class="form">
                         <div class="mb-3">
                             <label for="matric_number" class="form-label">Matric Number</label>
-                            <input type="text" class="form-control" id="matric_number" aria-describedby="matricHelp" placeholder="CSC/DE/25/...">
+                            <input type="text" class="form-control" name="matric_number" id="matric_number" required aria-describedby="matricHelp" placeholder="CSC/DE/25/...">
                             <div id="matricHelp" class="form-text">We'll never share your matric number with anyone else.</div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password">
+                            <input type="password" class="form-control" name="password" id="password" required>
                         </div> 
                         <input type="submit" name="login_btn" class="btn btn-primary" value="Login">
 

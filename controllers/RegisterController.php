@@ -8,7 +8,6 @@
         public function __construct(){
             $db = new DatabaseConnection();
             $this->conn = $db->conn;
-            echo " register controlleer triggered";
         }
 
         // main registration function
