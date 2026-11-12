@@ -16,6 +16,7 @@ class AuthenticationController
     }
 
 
+    // restrict pages to authenticated users only from authentication controller
     private function checkIsLoggedIn()
     {
         if (isset($_SESSION["authenticated"])) {
@@ -29,6 +30,7 @@ class AuthenticationController
     }
 
 
+    // get the logged in users details
     public function getAuthUserDetails()
     {
         $checkIfLoggedIn = $this->checkIsLoggedIn();
@@ -38,19 +40,19 @@ class AuthenticationController
         }
 
         // since user is logged in , we fetch his details from session
-        $user_id = $_SESSION["auth_user"]["id"];
+        $user_id = $_SESSION["auth_user"]["user_id"];
 
-        $getUserDataQuery = "SELECT * users WHERE id='$user_id'";
+        $getUserDataQuery = "SELECT * FROM users WHERE id='$user_id' LIMIT 1";
         $result = $this->conn->query($getUserDataQuery);
 
         if ($result->num_rows > 0 ){
-
+            $data = $result->fetch_assoc();
+            return $data;
         }
         else{
-            redirect("", "", site_url(""));
+            redirect("error getting users data", "red", site_url("login.php"));
         }
     }
 }
 
 
-$authenticated = new AuthenticationController();

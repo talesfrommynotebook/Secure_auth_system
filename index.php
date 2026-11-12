@@ -26,10 +26,6 @@
                 <br>
                 <h1>Welcome to <span>Oaustech</span></h1>
                 <p>lore ipsum dolor sit amet</p>
-                <div class="btn-holder">
-                    <a href="./login.php" class="btn btn-primary login-btn">Login</a>
-                    <a href="./register.php" class="btn btn-danger register-btn">Create Account</a>
-                </div>
             </div>
         </div>
     </section>

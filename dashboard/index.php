@@ -2,8 +2,10 @@
     //import authentication logic
     include_once "../includes/auth/authentication.php";
     
-    // restrict pages to authenticated users only from authentication controller
     include_once SITE_ROOT . '/controllers/AuthenticationController.php';
+    
+    $authenticated = new AuthenticationController();
+    $users_data = $authenticated->getAuthUserDetails();
 
     // navbar
     include SITE_ROOT . '/includes/components/navbar.php';   
