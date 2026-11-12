@@ -14,12 +14,7 @@ class LoginController
     }
 
 
-    public function loginUser($matric_number, $password)
-    {
-        return true;
-    }
-
-    public function checkLoginCredentials($matric_number, $password)
+    public function checkLoginCredentialsAndLogin($matric_number, $password)
     {
         $query = "SELECT * FROM users WHERE matric_number = '$matric_number'";
         $result = $this->conn->query($query);
@@ -33,7 +28,7 @@ class LoginController
             }
 
             // if pw is correct , authenticate user
-            $this->userAuthentication($data);
+            $this->loginUser($data);
 
             return true;
         } else {
@@ -42,7 +37,9 @@ class LoginController
     }
 
 
-    public function userAuthentication($data)
+
+
+    public function loginUser($data)
     {
         $_SESSION['authenticated'] = true;
         $_SESSION['auth_role'] = $data["role"];
@@ -57,12 +54,24 @@ class LoginController
     public function isUserAlreadyLoggedIn()
     {
         if (isset($_SESSION["authenticated"]) === true) {
-            redirect("authenticated", "green", site_url("authenticator_page.php"));
             return true;
         } else {
             return false;
         }
     }
-}
 
-?>
+
+
+    public function logout()
+    {
+        if (isset($_SESSION["authenticated"]) == true) {
+            // destroy the session
+            unset($_SESSION["authenticated"]);
+            unset($_SESSION["auth_role"]);
+            unset($_SESSION["auth_user"]);
+
+            return true;
+        }
+
+    }
+}

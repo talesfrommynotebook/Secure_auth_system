@@ -10,8 +10,8 @@
         }
 
         // main registration function
-        public function registration($fullname, $matric_number, $password){
-            $register_query = "INSERT INTO users (fullname, matric_number, password) VALUES ('$fullname', '$matric_number', '$password')";
+        public function registration($fullname, $matric_number, $hashed_password){
+            $register_query = "INSERT INTO users (fullname, matric_number, role, password) VALUES ('$fullname', '$matric_number', 'student', '$hashed_password')";
             $result = $this->conn->query($register_query);
             return $result;
         }

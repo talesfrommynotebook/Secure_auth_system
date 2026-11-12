@@ -1,3 +1,16 @@
+<?php
+    //import authentication logic
+    include_once "../includes/auth/authentication.php";
+    
+    // restrict pages to authenticated users only from authentication controller
+    include_once SITE_ROOT . '/controllers/AuthenticationController.php';
+
+    // navbar
+    include SITE_ROOT . '/includes/components/navbar.php';   
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,19 +24,16 @@
 
 <body>
 
-    <!-- navbar -->
-    <?php include 'includes/components/navbar.php'; ?>
 
-    <section class="hero-section">
+    <section class="hero-section P-5">
         <div class="container">
 
 
             <div class="hero-container">
-                <img src="assets/img/logo.png" alt="Hero Image">
                 <br>
                 <h1>Welcome To Your Dashboard</h1>
 
-                <?php include 'includes/components/showMessageAndToast.php'; ?>
+                <?php include SITE_ROOT . '/includes/components/showMessageAndToast.php'; ?>
                 <p>lore ipsum dolor sit amet</p>
 
             </div>
@@ -31,7 +41,7 @@
     </section>
 
     <!-- footer -->
-    <?php include 'includes/components/footer.php'; ?>
+    <?php include SITE_ROOT . '/includes/components/footer.php'; ?>
 
 
 </body>
