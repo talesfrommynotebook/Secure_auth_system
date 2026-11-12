@@ -23,3 +23,13 @@ function validate_input($conn, $input)
 {
     return mysqli_real_escape_string($conn, trim($input));
 }
+
+
+// function to redirect user
+function redirect($message, $message_display_color, $location)
+{
+    $_SESSION['message'] = $message;
+    $_SESSION['message_display_color'] = $message_display_color;
+    header("Location: $location");
+    exit();
+}

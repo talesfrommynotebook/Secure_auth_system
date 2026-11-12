@@ -1,3 +1,18 @@
+<?php
+
+
+// authentication code
+include "includes/auth/authentication.php";
+
+// check if user is already logged in
+$loginAuth->isUserAlreadyLoggedIn();
+
+
+// navbar
+include 'includes/components/navbar.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,12 +21,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="assets/css/auth_pages.css">
- </head>
+</head>
 
 <body>
 
-    <!-- navbar -->
-    <?php include 'includes/components/navbar.php'; ?>
 
     <section class="hero-section">
         <div class="container">
@@ -22,19 +35,21 @@
 
                 <br>
                 <!-- toast -->
-                <?=  include 'includes/components/toast.php' ?>
-                
+                <?= include 'includes/components/toast.php' ?>
+
                 <div class="form-container">
                     <form action="includes/auth/authentication.php" method="post" class="form">
                         <div class="mb-3">
                             <label for="matric_number" class="form-label">Matric Number</label>
-                            <input type="text" class="form-control" name="matric_number" id="matric_number" required aria-describedby="matricHelp" placeholder="CSC/DE/25/...">
-                            <div id="matricHelp" class="form-text">We'll never share your matric number with anyone else.</div>
+                            <input type="text" class="form-control" name="matric_number" id="matric_number" required
+                                aria-describedby="matricHelp" placeholder="CSC/DE/25/...">
+                            <div id="matricHelp" class="form-text">We'll never share your matric number with anyone
+                                else.</div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" name="password" id="password" required>
-                        </div> 
+                        </div>
                         <input type="submit" name="login_btn" class="btn btn-primary" value="Login">
 
                     </form>

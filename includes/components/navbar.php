@@ -1,6 +1,6 @@
 <?php
 
-    include("./includes/config/app.php");
+include("./includes/config/app.php");
 
 ?>
 
@@ -25,12 +25,37 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('index.php') ?>">Home</a>
                 </li>
+
+                <!-- if user is authenticated -->
+                <!-- show user profile dropdown with logout btn -->
+                <?php
+                if (isset($_SESSION["authenticated"])): ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Welcome <?php echo $_SESSION["user"]["fullname"]; ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <form action="" method="post">
+                                <button type="submit" name="logout_btn">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- else if user is not authenticated show login & register links  -->
+                <?php else: ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('login.php') ?>">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('register.php') ?>">Register</a>
                 </li>
+
+
+                <?php endif; ?>
+
             </ul>
         </div>
     </div>
