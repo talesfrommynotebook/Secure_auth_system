@@ -1,6 +1,5 @@
 <?php
 
-    include("../../includes/config/app.php");
 
     class RegisterController {
         public $conn;

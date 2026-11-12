@@ -1,4 +1,13 @@
+<?php
 
+
+// include authentication logic
+include 'includes/auth/authentication.php';
+
+// navbar
+include 'includes/components/navbar.php';
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,8 +22,6 @@
 
 <body>
 
-    <!-- navbar -->
-    <?php include 'includes/components/navbar.php'; ?>
 
     <section class="hero-section">
         <div class="container">

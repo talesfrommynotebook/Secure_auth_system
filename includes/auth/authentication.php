@@ -1,13 +1,28 @@
 <?php
 
+include_once(__DIR__ . "/../config/app.php");
+
+// 1. Include your controllers
+include_once(SITE_ROOT . "/controllers/LoginController.php");
+include_once(SITE_ROOT . "/controllers/RegisterController.php");
+
+function checkIfUserIsLoggedIn()
+{
+    // login controller logic
+    $loginAuth = new LoginController();
+    // check if user is already logged in
+    $checkLogin = $loginAuth->isUserAlreadyLoggedIn();
+
+    if ($checkLogin) {
+        redirect("already logged in", "green", site_url("authenticator_page.php"));
+    } else {
+        echo "<br> user not logged in ";
+    }
+}
 
 
 // register logic
 if (isset($_POST["register_btn"])) {
-
-
-    // import the RegisterController class
-    include("../../controllers/RegisterController.php");
 
 
     $fullname = validate_input($db->conn, $_POST["name"]);
@@ -46,7 +61,6 @@ if (isset($_POST["register_btn"])) {
 
     // redirect to authenticator page after successful registration
     redirect("Registration Successful", "green", "../../authenticator_page.php");
-
 }
 
 
@@ -56,10 +70,7 @@ if (isset($_POST["register_btn"])) {
 
 // login logic
 if (isset($_POST["login_btn"])) {
-
-    // import the LoginController class
-    include("../../controllers/LoginController.php");
-
+    session_start();
 
     $matric_number = validate_input($db->conn, $_POST["matric_number"]);
     $password = validate_input($db->conn, $_POST["password"]);
@@ -76,4 +87,14 @@ if (isset($_POST["login_btn"])) {
 
     redirect("Logged in successfully", "green", site_url("authenticator_page.php"));
 }
-?>
+
+
+// logout logic
+if (isset($_POST["logout_btn"])) {
+
+    // destroy the session
+    session_destroy();
+
+    // redirect to login page
+    redirect("You have been logged out", "green", site_url("login.php"));
+}

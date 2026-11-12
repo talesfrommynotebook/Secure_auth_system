@@ -1,12 +1,9 @@
 <?php
 
 
-// authentication code
-include "includes/auth/authentication.php";
-
-// check if user is already logged in
-$loginAuth->isUserAlreadyLoggedIn();
-
+// include authentication logic
+include 'includes/auth/authentication.php';
+checkIfUserIsLoggedIn();
 
 // navbar
 include 'includes/components/navbar.php';
@@ -35,7 +32,7 @@ include 'includes/components/navbar.php';
 
                 <br>
                 <!-- toast -->
-                <?= include 'includes/components/toast.php' ?>
+                <?= include 'includes/components/showMessageAndToast.php' ?>
 
                 <div class="form-container">
                     <form action="includes/auth/authentication.php" method="post" class="form">

@@ -1,6 +1,6 @@
 <?php
 
-include("./includes/config/app.php");
+// include("./includes/config/app.php");
 
 ?>
 
@@ -33,12 +33,12 @@ include("./includes/config/app.php");
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        Welcome <?php echo $_SESSION["user"]["fullname"]; ?>
+                        Welcome <?php echo $_SESSION["auth_user"]["fullname"]; ?>
                     </a>
                     <ul class="dropdown-menu">
-                        <li>
+                        <li class="p-2">
                             <form action="" method="post">
-                                <button type="submit" name="logout_btn">Logout</button>
+                                <button type="submit" name="logout_btn" class="btn btn-danger">Logout</button>
                             </form>
                         </li>
                     </ul>

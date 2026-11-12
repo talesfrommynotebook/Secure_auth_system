@@ -1,6 +1,5 @@
 <?php
 
-include("../../includes/config/app.php");
 
 
 class LoginController
@@ -22,14 +21,14 @@ class LoginController
 
     public function checkLoginCredentials($matric_number, $password)
     {
-        $query = "SELECT * from users WHERE matric_number = $matric_number";
+        $query = "SELECT * FROM users WHERE matric_number = '$matric_number'";
         $result = $this->conn->query($query);
 
         // if user exist , check if pw is correct
         if ($result->num_rows > 0) {
             $data = $result->fetch_assoc();
-            if ($data->password != $password) {
-                echo "password is incorrect";
+            if (!password_verify($password, $data['password'])) {
+                redirect('password is not correct', 'red', site_url('login.php'));
                 return false;
             }
 

@@ -1,9 +1,13 @@
+<!-- authentication -->
+<?php
+include 'includes/auth/authentication.php';
+checkIfUserIsLoggedIn();
+?>
+
+
 
 <!-- navbar -->
 <?php include 'includes/components/navbar.php'; ?>
-
-<!-- authentication -->
-<?php include 'includes/auth/authentication.php'; ?>
 
 
 <!DOCTYPE html>
@@ -69,6 +73,7 @@
     <!-- scripts -->
     <script src="./assets/js/authentication.js"></script>
 
-        
+
 </body>
+
 </html>

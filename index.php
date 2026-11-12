@@ -1,4 +1,7 @@
 
+<!-- authentication -->
+<?php include 'includes/auth/authentication.php'; ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

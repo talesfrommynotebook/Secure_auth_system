@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+// Points to the project root folder ("secure_auth_system/")
+define('SITE_ROOT', dirname(__DIR__, 2)); 
 
 // define database connection parameters
 define('DB_HOST', 'localhost');
@@ -10,7 +12,9 @@ define("DB_NAME", "secure_auth_db");
 // define the base URL of the application
 define("SITE_URL", "http://localhost/Php_Projects/secure_auth_system/");
 
-include_once("DatabaseConnection.php");
+
+// 2. Use SITE_ROOT to include DatabaseConnection reliably from anywhere
+include_once(__DIR__ . "/DatabaseConnection.php");
 $db = new DatabaseConnection();
 
 function site_url($slug)
