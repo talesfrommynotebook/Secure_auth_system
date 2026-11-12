@@ -13,6 +13,7 @@ class AuthenticationController
         $db = new DatabaseConnection();
         $this->conn = $db->conn;
         $this->checkIsLoggedIn();
+        $this->checkIfUserIsVerified();
     }
 
 
@@ -26,6 +27,17 @@ class AuthenticationController
             // User is not logged in
             redirect("You need to login to access this page", "red", site_url("login.php"));
             return false;
+        }
+    }
+
+
+    private function checkIfUserIsVerified()
+    {
+        // You can check either the session or query the database
+        $user = $this->getAuthUserDetails();
+
+        if ($user['is_2fa_verified'] == 0) {
+            redirect("Please complete your 2FA verification", "orange", site_url("dashboard/verify-setup.php"));
         }
     }
 
@@ -45,14 +57,11 @@ class AuthenticationController
         $getUserDataQuery = "SELECT * FROM users WHERE id='$user_id' LIMIT 1";
         $result = $this->conn->query($getUserDataQuery);
 
-        if ($result->num_rows > 0 ){
+        if ($result->num_rows > 0) {
             $data = $result->fetch_assoc();
             return $data;
-        }
-        else{
+        } else {
             redirect("error getting users data", "red", site_url("login.php"));
         }
     }
 }
-
-
