@@ -1,14 +1,15 @@
 <?php
-    //import authentication logic
-    include_once "../includes/auth/authentication.php";
-    
-    include_once SITE_ROOT . '/controllers/AuthenticationController.php';
-    
-    $authenticated = new AuthenticationController();
-    $users_data = $authenticated->getAuthUserDetails();
+//import authentication logic
+include_once "../includes/auth/authentication.php";
 
-    // navbar
-    include SITE_ROOT . '/includes/components/navbar.php';   
+include_once SITE_ROOT . '/controllers/AuthenticationController.php';
+
+$authenticated = new AuthenticationController();
+$users_data = $authenticated->getAuthUserDetails();
+$checkIfUserIsVerified = $authenticated->checkIfUserIsVerified();
+
+// navbar
+include SITE_ROOT . '/includes/components/navbar.php';
 
 ?>
 

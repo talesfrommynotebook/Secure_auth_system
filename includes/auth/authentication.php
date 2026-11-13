@@ -80,7 +80,6 @@ if (isset($_POST["register_btn"])) {
 
 // login logic
 if (isset($_POST["login_btn"])) {
-    session_start();
 
     $matric_number = validate_input($db->conn, $_POST["matric_number"]);
     $password = validate_input($db->conn, $_POST["password"]);
@@ -108,6 +107,8 @@ if (isset($_POST["login_btn"])) {
 if (isset($_POST["logout_btn"])) {
 
     $loginAuth = new LoginController();
+
+
     $checkLoggedOut = $loginAuth->logout();
 
     if (!$checkLoggedOut) {

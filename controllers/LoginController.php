@@ -48,7 +48,20 @@ class LoginController
             'fullname' => $data["fullname"],
             'matric_number' => $data["matric_number"],
         ];
+
+        include_once(__DIR__ . "/AuthenticationController.php");
+        $authController = new AuthenticationController();
+        // create a user session log on login
+        $createUserSessionLog = $authController->createUserSessionLog($_SESSION['auth_user']);
+        if (!$createUserSessionLog) {
+            redirect("Could not create user session log", "red", site_url("login.php"));
+            exit;
+        }
+
+        return true;
     }
+
+
 
 
     public function isUserAlreadyLoggedIn()
@@ -65,6 +78,26 @@ class LoginController
     public function logout()
     {
         if (isset($_SESSION["authenticated"]) == true) {
+
+            // update user session to inactie on logout
+            include_once(__DIR__ . "/AuthenticationController.php");
+            $authController = new AuthenticationController();
+            $session_status = 'inactive';
+            $last_activity = date('Y-m-d H:i:s');
+            $updateSession = $authController->updateUserSessionLogOnLogout($_SESSION['auth_user']['user_id'], $session_status, $last_activity);
+            if (!$updateSession) {
+                redirect("Could not update user session log on logout", "red", site_url("dashboard"));
+                exit;
+            }
+
+
+            // unverify users 2fa status on logout first, so that they will be prompted to verify again on next login
+            $unverifyUser2fa = $this->unverifyUser2fa($_SESSION["auth_user"]["user_id"]);
+            if (!$unverifyUser2fa) {
+                redirect("Could not unverify user 2fa status", "red", site_url("dashboard"));
+                exit;
+            }
+
             // destroy the session
             unset($_SESSION["authenticated"]);
             unset($_SESSION["auth_role"]);
@@ -72,6 +105,22 @@ class LoginController
 
             return true;
         }
+    }
 
+
+
+
+
+
+
+    public function unverifyUser2fa($user_id)
+    {
+        $updateVerificationStatusQuery = "UPDATE users SET is_2fa_verified=0 WHERE id = '$user_id'";
+        $result = $this->conn->query($updateVerificationStatusQuery);
+        if (!$result) {
+            redirect("Error updating verification status in database", "red", site_url("dashboard/verify-setup.php"));
+        }
+
+        return $result;
     }
 }

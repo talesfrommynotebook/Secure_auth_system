@@ -6,6 +6,7 @@ include_once "../includes/auth/authentication.php";
 include_once SITE_ROOT . '/controllers/AuthenticationController.php';
 $authenticated = new AuthenticationController();
 $users_data = $authenticated->getAuthUserDetails();
+$checkIfUserIsVerified = $authenticated->checkIfUserIsVerified();
 
 // navbar
 include SITE_ROOT . '/includes/components/navbar.php';
@@ -47,7 +48,8 @@ include SITE_ROOT . '/includes/components/navbar.php';
                     <h5>Matric Number : </h5> <span><?= $users_data["matric_number"] ?></span>
                 </div>
                 <div class="each-details-box">
-                    <h5>Registration Date : </h5> <span><?= date('d-m-y', strtotime($users_data["created_at"])) ?></span>
+                    <h5>Registration Date : </h5>
+                    <span><?= date('Y-m-d H:i:s', strtotime($users_data["created_at"])) ?></span>
                 </div>
             </div>
         </div>

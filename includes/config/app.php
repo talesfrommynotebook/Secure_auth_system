@@ -2,7 +2,10 @@
 
 session_start();
 // Points to the project root folder ("secure_auth_system/")
-define('SITE_ROOT', dirname(__DIR__, 2)); 
+define('SITE_ROOT', dirname(__DIR__, 2));
+
+// Include Composer autoloader to load the 2FA library
+require_once SITE_ROOT . '/vendor/autoload.php';
 
 // define database connection parameters
 define('DB_HOST', 'localhost');

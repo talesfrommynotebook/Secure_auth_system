@@ -1,5 +1,8 @@
 {
     "require-dev": {
         "laravel/pint": "*"
+    },
+    "require": {
+        "robthree/twofactorauth": "^3.0"
     }
 }
