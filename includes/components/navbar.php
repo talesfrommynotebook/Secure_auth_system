@@ -20,11 +20,11 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= site_url('index.php') ?>">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
 
                 <!-- if user is authenticated -->
@@ -59,7 +59,7 @@
                 <?php endif; ?>
 
             </ul>
-            
+
         </div>
 
     </div>

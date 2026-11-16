@@ -1,0 +1,140 @@
+.hero-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  /* width: 100%; */
+}
+
+.hero-section .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-container.card {
+  background: #ffffff;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(58, 74, 91, 0.08);
+  padding: 2.5rem !important;
+  border-top: 5px solid var(--oaustech-primary);
+}
+
+.hero-container h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--oaustech-primary);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle-text {
+  font-size: 0.95rem;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Steps list styling */
+.setup-steps {
+  background: #fffdf9;
+  border: 1px solid #ffebaa;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.setup-steps p {
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setup-steps p strong {
+  color: var(--oaustech-primary);
+}
+
+/* QR Code Box */
+.qr-code {
+  text-align: center;
+  background: #ffffff;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.qr-code img {
+  max-width: 160px;
+  height: auto;
+  display: inline-block;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  color: var(--oaustech-navy);
+}
+
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1.2rem;
+  letter-spacing: 4px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: #f8fafc;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.form-group input[type="text"]:focus {
+  border-color: var(--oaustech-primary);
+  background: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 30, 36, 0.1);
+}
+
+.btn-success {
+  display: block;
+  width: 100%;
+  background-color: var(--oaustech-primary);
+  border: none;
+  color: white;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.btn-success:hover {
+  background-color: var(--oaustech-primary-hover);
+}
+
+.security-badge {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}

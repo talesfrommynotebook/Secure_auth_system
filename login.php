@@ -32,7 +32,7 @@ include 'includes/components/navbar.php';
 
                 <br>
                 <!-- toast -->
-                <?= include 'includes/components/showMessageAndToast.php' ?>
+                <?php include 'includes/components/showMessageAndToast.php'; ?>
 
                 <div class="form-container">
                     <form action="includes/auth/authentication.php" method="post" class="form">

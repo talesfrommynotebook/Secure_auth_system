@@ -40,3 +40,21 @@ function redirect($message, $message_display_color, $location)
     header("Location: $location");
     exit();
 }
+
+// for logging activity
+function writeActivityLog($matric_number, $fullname, $action)
+{
+    $logFile = SITE_ROOT . '/logs/activity.log';
+
+    // Ensure the 'logs' directory exists
+    $logDir = dirname($logFile);
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0777, true);
+    }
+
+    $timestamp = date('Y-m-d H:i:s');
+    $logEntry = "[{$timestamp}] Student: {$fullname} ({$matric_number}) - {$action}" . PHP_EOL;
+
+    // Append to the file safely
+    file_put_contents($logFile, $logEntry, FILE_APPEND);
+}

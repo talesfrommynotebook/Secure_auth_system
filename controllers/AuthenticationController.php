@@ -16,10 +16,10 @@ class AuthenticationController
         $db = new DatabaseConnection();
         $this->conn = $db->conn;
         $this->checkIsLoggedIn();
-        // FIX 1: Update activity FIRST so the timestamp is current before checking timeouts
+        // Update activity timestamp on every page load
         $this->updateUserActivity();
 
-        // FIX 2: Check timeouts SECOND
+        // Check timeouts SECOND 
         $this->checkSessionTimeouts();
     }
 
@@ -75,53 +75,51 @@ class AuthenticationController
 
 
 
-
     public function getUser2faVerificationCode()
     {
         $tfa = new TwoFactorAuth(new QRServerProvider(), "Oaustech 2FA Verification");
         $user = $this->getAuthUserDetails();
 
-        if (empty($user["google_secret"])) {
-            $secret = $tfa->createSecret();
-
-            $user_id = $this->conn->real_escape_string($user["id"]);
-            $secret_escaped = $this->conn->real_escape_string($secret);
-
-            $updateQuery = "UPDATE users SET google_secret = '$secret_escaped' WHERE id = '$user_id'";
-            if (!$this->conn->query($updateQuery)) {
-                redirect("Error storing secret in database", "red", site_url("dashboard/verify-setup.php"));
-            }
-        } else {
-            $secret = $user['google_secret'];
+        // 1. Check if a temporary secret already exists in the session for this setup flow
+        if (empty($_SESSION['temp_google_secret'])) {
+            // Generate a new secret and store it safely in the session
+            $_SESSION['temp_google_secret'] = $tfa->createSecret();
         }
 
+        $secret = $_SESSION['temp_google_secret'];
+
+        // Generate the QR code URL using the session secret and user's full name/matric
         return $tfa->getQRCodeImageAsDataUri($user['fullname'], $secret);
     }
 
-
-
-
-
-
-
-
-    public function verifyUser2faCode($userInputCode, $secret)
+    public function verifyUser2faCode($userInputCode, $sessionSecret)
     {
         $tfa = new TwoFactorAuth(new QRServerProvider(), "Oaustech 2FA Verification");
 
-        if (!$tfa->verifyCode($secret, $userInputCode)) {
+        // Verify the code against the temporary session secret
+        if (!$tfa->verifyCode($sessionSecret, $userInputCode)) {
             redirect("Invalid verification code. Please try again.", "red", site_url("dashboard/verify-setup.php"));
             return false;
         }
 
         $user_id = $this->conn->real_escape_string($this->getAuthUserDetails()['id']);
-        $updateQuery = "UPDATE users SET is_2fa_verified = 1 WHERE id = '$user_id'";
+        $escapedSecret = $this->conn->real_escape_string($sessionSecret);
+
+        // NOW that they have proven they scanned it, save the secret permanently and set verified to 1
+        $updateQuery = "UPDATE users SET google_secret = '$escapedSecret', is_2fa_verified = 1 WHERE id = '$user_id'";
 
         if (!$this->conn->query($updateQuery)) {
-            redirect("Error updating verification status in database", "red", site_url("dashboard/verify-setup.php"));
+            redirect("Error saving verification details in database", "red", site_url("dashboard/verify-setup.php"));
+            return false;
         }
 
+        // Clear the temporary session secret since it's now safely in the database
+        unset($_SESSION['temp_google_secret']);
+
+
+        writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Successfully verified their account.");
         redirect("Your account has been successfully verified!", "green", site_url("dashboard/index.php"));
+        return true;
     }
 
 
@@ -133,7 +131,6 @@ class AuthenticationController
     // function to create a user session log
     public function createUserSessionLog($data)
     {
-
         if ($_SESSION['authenticated'] != true) {
             return false;
         }
@@ -143,32 +140,36 @@ class AuthenticationController
         $ip_address = $_SERVER['REMOTE_ADDR'];
         $user_agent = $_SERVER['HTTP_USER_AGENT'];
 
-        $last_activity = date('Y-m-d H:i:s');
-        $created_at = date('Y-m-d H:i:s');
+        $current_time = date('Y-m-d H:i:s');
 
-        // first , check if user already has an active session
+        // First, check if user already has an active or old session row
         $checkActiveSessionQuery = "SELECT * FROM `user_sessions` WHERE `user_id`='$user_id'";
         $checkActiveSessionResult = $this->conn->query($checkActiveSessionQuery);
 
         if ($checkActiveSessionResult->num_rows > 0) {
-            // User already has a session just update the session status to active and update the last activity time
-            $updateSessionQuery = "UPDATE `user_sessions` SET `session_status`='$session_status', `ip_address`='$ip_address', `user_agent`='$user_agent', `last_activity`='$last_activity', `created_at`='$created_at' WHERE `user_id`='$user_id'";
+            // Reset the timers completely on a fresh login so it doesn't trigger 30-min timeout falsely!
+            $updateSessionQuery = "UPDATE `user_sessions` SET 
+            `session_status` = '$session_status', 
+            `ip_address` = '$ip_address', 
+            `user_agent` = '$user_agent', 
+            `last_activity` = '$current_time', 
+            `session_life_cycle_refresh_time` = '$current_time'
+            WHERE `user_id` = '$user_id'";
+
             $updateSessionResult = $this->conn->query($updateSessionQuery);
-            if (!$updateSessionResult) {
-                return false;
-            }
-            return true;
+            writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Session successfully Updatted.");
+            return $updateSessionResult ? true : false;
         }
 
-        // if user does not have an active session, create a new session log
-        $query = "INSERT INTO `user_sessions`(`user_id`, `session_status`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES ('$user_id', '$session_status', '$ip_address', '$user_agent', '$last_activity', '$created_at')";
+        // If no session row exists, create a brand new one with fresh timestamps
+        $query = "INSERT INTO `user_sessions` (`user_id`, `session_status`, `ip_address`, `user_agent`, `last_activity`, `session_life_cycle_refresh_time`, `created_at`) 
+              VALUES ('$user_id', '$session_status', '$ip_address', '$user_agent', '$current_time', '$current_time', '$current_time')";
+
         $result = $this->conn->query($query);
 
-        if (!$result) {
-            return false;
-        }
 
-        return true;
+        writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Session successfully created.");
+        return $result ? true : false;
     }
 
 
@@ -213,10 +214,13 @@ class AuthenticationController
         return true;
     }
 
+
+
+
     // update user activity timestamp on every page load
     private function updateUserActivity()
     {
-        if (isset($_SESSION["auth_user"]["user_id"])) {
+        if (isset($_SESSION["authenticated"])) {
             $user_id = $_SESSION["auth_user"]["user_id"];
             $current_time = date('Y-m-d H:i:s'); // Use PHP time consistently
             $this->conn->query("UPDATE user_sessions SET last_activity = '$current_time' WHERE user_id = '$user_id'");
@@ -253,18 +257,20 @@ class AuthenticationController
             // If user is inactive for more than 600 seconds (10 minutes)
             if ($inactiveSeconds > 600) {
                 $this->destroyUserSession($user_id);
+                writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Session expired due to inactivity..");
                 redirect("Session expired due to inactivity.", "orange", site_url("login.php"));
             }
         }
 
         // 30 Minutes Absolute Session Limit
-        if (!empty($session['created_at'])) {
-            $sessionStartTime = strtotime($session['created_at']);
+        if (!empty($session['session_life_cycle_refresh_time'])) {
+            $sessionStartTime = strtotime($session['session_life_cycle_refresh_time']);
             $totalSessionSeconds = $currentTime - $sessionStartTime;
 
             // If total session time is more than 1800 seconds (30 minutes)
             if ($totalSessionSeconds > 1800) {
                 $this->destroyUserSession($user_id);
+                writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Your 30-minute session has expired.");
                 redirect("Your 30-minute session has expired.", "red", site_url("login.php"));
             }
         }
@@ -274,23 +280,21 @@ class AuthenticationController
     {
         $session_status = 'expired';
         $last_activity = date('Y-m-d H:i:s');
+        $session_life_cycle_refresh_time = date('Y-m-d H:i:s');
 
         // Update session table log
-        $this->conn->query("UPDATE user_sessions SET session_status='$session_status', last_activity='$last_activity' WHERE user_id='$user_id'");
+        $this->conn->query("UPDATE user_sessions SET session_status='$session_status', last_activity='$last_activity', session_life_cycle_refresh_time='$session_life_cycle_refresh_time' WHERE user_id='$user_id'");
 
         // Clear PHP session data
         unset($_SESSION['authenticated']);
         unset($_SESSION['auth_role']);
         unset($_SESSION['auth_user']);
-
-        unset($_SESSION['last_activity']);
-        unset($_SESSION['created_at']);
     }
 
 
 
 
-    
+
     // Calculate the exact remaining seconds for both timers for frontend display
     public function getSessionTimeoutsRemaining()
     {
@@ -299,8 +303,8 @@ class AuthenticationController
 
         // Hard Limit (30 minutes = 1800 seconds)
         $hardLimitRemaining = 1800;
-        if ($sessionDetails && !empty($sessionDetails['created_at'])) {
-            $elapsedHard = $currentTime - strtotime($sessionDetails['created_at']);
+        if ($sessionDetails && !empty($sessionDetails['session_life_cycle_refresh_time'])) {
+            $elapsedHard = $currentTime - strtotime($sessionDetails['session_life_cycle_refresh_time']);
             $hardLimitRemaining = max(0, 1800 - $elapsedHard);
         }
 

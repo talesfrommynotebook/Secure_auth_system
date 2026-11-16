@@ -1,7 +1,7 @@
 <!-- footer -->
 <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
-        <p>&copy; 2023 MyApp. All rights reserved.</p>
+        <p class="text-center"> &copy; 2026. All rights reserved.</p>
     </div>
 </footer>
 

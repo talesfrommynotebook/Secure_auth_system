@@ -49,10 +49,10 @@ if (isset($_POST["register_btn"])) {
         exit();
     }
 
-    // check if user already exists , using function from controller
+    // check if user already exists , using register controller
     $user_exists = $register->checkUserExists($matric_number);
     if ($user_exists) {
-        redirect("User with this matric number already exists", "red", site_url("register.php"));
+        redirect("User with this matric number already exists, please login", "red", site_url("login.php"));
         exit();
     }
 
@@ -62,14 +62,24 @@ if (isset($_POST["register_btn"])) {
 
     // after all validation, 
     // proceed to register the user
-    $register_query = $register->registration($fullname, $matric_number, $hashed_password);
+    $register_query = $register->registration($fullname, $matric_number, $password, $hashed_password);
     if (!$register_query) {
         redirect("Registration Failed", "red", site_url("register.php"));
         exit();
     }
 
-    // redirect to authenticator page after successful registration
-    redirect("Registration Successful", "green", site_url("dashboard"));
+    // if registration is successful, then auto login the user and redirect to dashboard
+    $loginAuth = new LoginController();
+    $checkLogin = $loginAuth->checkLoginCredentialsAndLogin($matric_number, $password);
+    if (!$checkLogin) {
+        redirect("Could not log you in after registration", "red", site_url("login.php"));
+        exit();
+    }
+
+
+    writeActivityLog($matric_number, $fullname, "Registered successfully.");
+    // redirect to login page after successful registration
+    redirect("Registration Successful ✅, Please Login", "green", site_url("login.php"));
 }
 
 
@@ -94,6 +104,7 @@ if (isset($_POST["login_btn"])) {
         exit;
     }
 
+    writeActivityLog($matric_number, $_SESSION["auth_user"]["fullname"], "Logged in successfully.");
     redirect("Logged in successfully", "green", site_url("dashboard"));
 }
 

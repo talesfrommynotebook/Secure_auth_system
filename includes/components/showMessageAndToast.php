@@ -1,5 +1,6 @@
-
-<!-- toastify -->
+<!-- toastify css -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<!-- toastify js -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 
@@ -16,7 +17,7 @@ if (isset($_SESSION['message'])) {
     isset($_SESSION['message_display_color']) && $message_display_color = $_SESSION['message_display_color'];
 
 
-    echo "<span class='message' style='color: $message_display_color;'>$message</span>";
+    // echo "<span class='message' style='color: $message_display_color;'>$message</span>";
 
 
     echo "<script>

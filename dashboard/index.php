@@ -52,9 +52,10 @@ include SITE_ROOT . '/includes/components/navbar.php';
 
     <script src="./assets/js/session-timeout.js"></script>
     <script>
+        // Get the timer limits PHP values from the controller into JavaScript
         let absoluteTimeRemaining = <?php echo $hardLimitRemaining; ?>;
         let idleTimeRemaining = <?php echo $idleLimitRemaining; ?>;
-        display_timeout(absoluteTimeRemaining, idleTimeRemaining) 
+        display_timeout(absoluteTimeRemaining, idleTimeRemaining)
     </script>
 
 

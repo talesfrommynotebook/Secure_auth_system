@@ -1,6 +1,4 @@
-
-  const baseURL = "./includes/auth/" // Set base to the folder directory
-
+const baseURL = "./includes/auth/"; // Set base to the folder directory
 
 async function registerUser(event) {
   // Prevent default form submission reload
@@ -14,16 +12,21 @@ async function registerUser(event) {
 
   try {
     // Append file name to baseURL, or specify full relative path cleanly
-    const response = await axios.post(`${baseURL}authentication.php`, dataToSend);
-    
+    const response = await axios.post(
+      `${baseURL}authentication.php`,
+      dataToSend,
+    );
+
     console.log("Registration successful:", response.data);
     alert("Account created successfully!");
-    
+
     // Optional: redirect user after success
     // window.location.href = "./login.php";
-
   } catch (error) {
-    console.error("Error registering user:", error.response?.data || error.message);
+    console.error(
+      "Error registering user:",
+      error.response?.data || error.message,
+    );
     alert("Registration failed. Please try again.");
   }
 }
