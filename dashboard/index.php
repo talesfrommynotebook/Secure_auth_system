@@ -25,7 +25,7 @@ include SITE_ROOT . '/includes/components/navbar.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome To Your Dashboard</title>
-    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href=<?php SITE_ROOT . "assets/css/index.css" ?>>
 </head>
 
 <body>
@@ -55,7 +55,8 @@ include SITE_ROOT . '/includes/components/navbar.php';
         // Get the timer limits PHP values from the controller into JavaScript
         let absoluteTimeRemaining = <?php echo $hardLimitRemaining; ?>;
         let idleTimeRemaining = <?php echo $idleLimitRemaining; ?>;
-        display_timeout(absoluteTimeRemaining, idleTimeRemaining)
+        let idleTimeSettings = <?php echo INACTIVITY_SECONDS_LIMIT_SETTINGS; ?>;
+        display_timeout(absoluteTimeRemaining, idleTimeRemaining, idleTimeSettings)
     </script>
 
 

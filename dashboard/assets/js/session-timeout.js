@@ -1,6 +1,10 @@
 // Get the clean PHP values from the controller into JavaScript
 
-function display_timeout(absoluteTimeRemaining, idleTimeRemaining) {
+function display_timeout(
+  absoluteTimeRemaining,
+  idleTimeRemaining,
+  idleTimeSettings,
+) {
   function formatTime(seconds) {
     let minutes = Math.floor(seconds / 60);
     let secs = seconds % 60;
@@ -33,7 +37,7 @@ function display_timeout(absoluteTimeRemaining, idleTimeRemaining) {
 
   function resetIdleTimer() {
     // Reset back to 10 minutes on user activity
-    idleTimeRemaining = 600;
+    idleTimeRemaining = idleTimeSettings;
   }
 
   window.addEventListener("mousemove", resetIdleTimer);

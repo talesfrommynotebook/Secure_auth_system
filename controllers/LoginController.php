@@ -99,12 +99,9 @@ class LoginController
             }
 
             writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Logged out manually.");
-
-            // destroy the session
-            unset($_SESSION["authenticated"]);
-            unset($_SESSION["auth_role"]);
-            unset($_SESSION["auth_user"]);
-
+            // destroy and clear session data
+            session_unset();
+            session_destroy();
             return true;
         }
     }

@@ -22,7 +22,7 @@ include SITE_ROOT . '/includes/components/navbar.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
     <!-- custom css -->
-    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href=<?php SITE_ROOT . "assets/css/index.css" ?>>
 </head>
 
 <body>

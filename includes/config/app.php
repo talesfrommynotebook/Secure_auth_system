@@ -26,6 +26,10 @@ function site_url($slug)
 }
 
 
+define("INACTIVITY_SECONDS_LIMIT_SETTINGS", 600);
+define("ABSOLUTE_SECONDS_LIMIT_SETTINGS", 1800);
+
+
 function validate_input($conn, $input)
 {
     return mysqli_real_escape_string($conn, trim($input));

@@ -254,11 +254,10 @@ class AuthenticationController
             $lastActivityTime = strtotime($session['last_activity']);
             $inactiveSeconds = $currentTime - $lastActivityTime;
 
-            // If user is inactive for more than 600 seconds (10 minutes)
-            if ($inactiveSeconds > 600) {
+            if ($inactiveSeconds > INACTIVITY_SECONDS_LIMIT_SETTINGS) {
                 $this->destroyUserSession($user_id);
-                writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Session expired due to inactivity..");
                 redirect("Session expired due to inactivity.", "orange", site_url("login.php"));
+                exit();
             }
         }
 
@@ -267,28 +266,41 @@ class AuthenticationController
             $sessionStartTime = strtotime($session['session_life_cycle_refresh_time']);
             $totalSessionSeconds = $currentTime - $sessionStartTime;
 
-            // If total session time is more than 1800 seconds (30 minutes)
-            if ($totalSessionSeconds > 1800) {
+            if ($totalSessionSeconds > ABSOLUTE_SECONDS_LIMIT_SETTINGS) {
                 $this->destroyUserSession($user_id);
-                writeActivityLog($_SESSION["auth_user"]["matric_number"], $_SESSION["auth_user"]["fullname"], "Your 30-minute session has expired.");
                 redirect("Your 30-minute session has expired.", "red", site_url("login.php"));
+                exit();
             }
         }
     }
+
+
 
     private function destroyUserSession($user_id)
     {
         $session_status = 'expired';
         $last_activity = date('Y-m-d H:i:s');
-        $session_life_cycle_refresh_time = date('Y-m-d H:i:s');
+        $current_time = date('Y-m-d H:i:s');
 
-        // Update session table log
-        $this->conn->query("UPDATE user_sessions SET session_status='$session_status', last_activity='$last_activity', session_life_cycle_refresh_time='$session_life_cycle_refresh_time' WHERE user_id='$user_id'");
+        // Fetch user details before clearing session
+        $userQuery = $this->conn->query("SELECT fullname, matric_number FROM users WHERE id = '$user_id' LIMIT 1");
+        if ($userQuery && $userQuery->num_rows > 0) {
+            $uData = $userQuery->fetch_assoc();
+            writeActivityLog($uData['matric_number'], $uData['fullname'], "Session expired due to inactivity or 30-minute limit.");
+        }
 
-        // Clear PHP session data
-        unset($_SESSION['authenticated']);
-        unset($_SESSION['auth_role']);
-        unset($_SESSION['auth_user']);
+        // Update session table log status to expired
+        $this->conn->query("UPDATE user_sessions SET session_status='$session_status', last_activity='$last_activity', session_life_cycle_refresh_time='$current_time' WHERE user_id='$user_id'");
+
+        // Unverify user's 2FA status so they must verify again on next login
+        $this->conn->query("UPDATE users SET is_2fa_verified = 0 WHERE id = '$user_id'");
+
+
+        // destroy and clear session data
+        session_unset();
+        session_destroy();
+        redirect("Your session has expired. Please login again.", "orange", site_url("login.php"));
+        exit();
     }
 
 
@@ -302,17 +314,17 @@ class AuthenticationController
         $currentTime = time();
 
         // Hard Limit (30 minutes = 1800 seconds)
-        $hardLimitRemaining = 1800;
+        $hardLimitRemaining = ABSOLUTE_SECONDS_LIMIT_SETTINGS;
         if ($sessionDetails && !empty($sessionDetails['session_life_cycle_refresh_time'])) {
             $elapsedHard = $currentTime - strtotime($sessionDetails['session_life_cycle_refresh_time']);
-            $hardLimitRemaining = max(0, 1800 - $elapsedHard);
+            $hardLimitRemaining = max(0, ABSOLUTE_SECONDS_LIMIT_SETTINGS - $elapsedHard);
         }
 
         // Inactivity Limit (10 minutes = 600 seconds)
-        $idleLimitRemaining = 600;
+        $idleLimitRemaining = INACTIVITY_SECONDS_LIMIT_SETTINGS;
         if ($sessionDetails && !empty($sessionDetails['last_activity'])) {
             $elapsedIdle = $currentTime - strtotime($sessionDetails['last_activity']);
-            $idleLimitRemaining = max(0, 600 - $elapsedIdle);
+            $idleLimitRemaining = max(0, INACTIVITY_SECONDS_LIMIT_SETTINGS - $elapsedIdle);
         }
 
         return [
